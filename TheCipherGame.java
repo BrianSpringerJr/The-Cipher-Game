@@ -322,6 +322,7 @@ public class TheCipherGame extends JFrame  implements ActionListener {
     * PASSED TO THIS FUNCTION: 
         *    @param msg: The message to be encoded.
         *    @param key: The key that encodes it.
+     * @return: The encoded vigenere method.
     */
     public String toVigenere(String msg, String key) {
         String formattedKey = formatKey(msg, key);
@@ -352,6 +353,7 @@ public class TheCipherGame extends JFrame  implements ActionListener {
     * PASSED TO THIS FUNCTION: 
         *    @param msg: The message to be decoded.
         *    @param key: The key that decodes it.
+     * @return: The decoded vigenere message.
     */
     public String fromVigenere(String msg, String key) {
         String formattedKey = formatKey(msg, key);
@@ -402,8 +404,10 @@ public class TheCipherGame extends JFrame  implements ActionListener {
                 txtFld.setText(toAbtash(msg));
             }
             else if (btn == SUB) {
-                Pattern pattern = Pattern.compile("([\\s]?\\d{1,2}[:\\?!,'-\\.\\s])+");
+                Pattern pattern;
+                pattern = Pattern.compile("([\\s]?\\d{1,2}[:\\?!,'-\\.\\s])+");
                 Matcher matcher = pattern.matcher(msg);
+                
                 if(matcher.matches()) {
                     txtFld.setText(fromAIZ26(msg));
                 } 
@@ -430,11 +434,26 @@ public class TheCipherGame extends JFrame  implements ActionListener {
         } 
     }
     
-    public TheCipherGame() {
+    public final void createWindow() {
         setTitle("The Cipher Game");
         setSize(650,240);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setResizable(false);
         setVisible(true);
+    }
+    
+    public final void createActionListeners() {
+        toCAESAR.addActionListener(this);
+        fromCAESAR.addActionListener(this);
+        ABTASH.addActionListener(this);
+        SUB.addActionListener(this);
+        ENCODEVIGENERE.addActionListener(this);
+        DECODEVIGENERE.addActionListener(this);
+    }
+    public TheCipherGame() {
+        
+        createWindow();
+        createActionListeners();
         
         pnl.setLayout(new GridLayout(1,4,5,5));
         pnl.add(toCAESAR);
@@ -454,15 +473,6 @@ public class TheCipherGame extends JFrame  implements ActionListener {
         
         content.setLayout(new FlowLayout());
         content.add(mainPnl, BorderLayout.CENTER);
-        
-        toCAESAR.addActionListener(this);
-        fromCAESAR.addActionListener(this);
-        ABTASH.addActionListener(this);
-        SUB.addActionListener(this);
-        ENCODEVIGENERE.addActionListener(this);
-        DECODEVIGENERE.addActionListener(this);
-        
-        txtFld.setSize(WIDTH, HEIGHT);
     }
      
     public static void main(String[] args) {
