@@ -15,6 +15,8 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -23,9 +25,6 @@ import javax.swing.JTextField;
 
 
 public class TheCipherGame extends JFrame  implements ActionListener {
-    
-    // Program Fields
-    boolean isEncoded;
     
     // GUI Fields
     
@@ -195,6 +194,7 @@ public class TheCipherGame extends JFrame  implements ActionListener {
             
             str += " ";
         }
+        str = str.trim();
         return str;
     }
     
@@ -240,6 +240,7 @@ public class TheCipherGame extends JFrame  implements ActionListener {
                 }
             }
         }
+        str = str.trim();
         return str;
     }
     
@@ -253,9 +254,11 @@ public class TheCipherGame extends JFrame  implements ActionListener {
         *    @param  key: The cipher key.     
         
     */
-    public String formatKey(String msg, String key) {
+    private String formatKey(String msg, String key) {
         String tmp = "";
         int count = 0;
+        key = key.replaceAll("\\s+","");
+        
         for(int i = 0; i < msg.length(); i++) {
             char ch = msg.charAt(i);
             if(Character.isAlphabetic(ch)) {
@@ -279,7 +282,7 @@ public class TheCipherGame extends JFrame  implements ActionListener {
     *              row is offset by one, before it loops around to the 
     *              beginning.
     */
-    public char[][] createVigenereSquare() {
+    private char[][] createVigenereSquare() {
         char[][] arr = new char[26][26];
         int row = 0;
         
@@ -305,7 +308,7 @@ public class TheCipherGame extends JFrame  implements ActionListener {
     * PASSED TO THIS FUNCTION: 
         *    @param ch: The character who index needs to be found.
     */
-    public int getAlphabetIndex(char ch) {
+    private int getAlphabetIndex(char ch) {
         int count = 0;
         for(char i = 'A'; i < ch; i++ ) {
             count++;
@@ -399,13 +402,13 @@ public class TheCipherGame extends JFrame  implements ActionListener {
                 txtFld.setText(toAbtash(msg));
             }
             else if (btn == SUB) {
-                if(isEncoded) {
+                Pattern pattern = Pattern.compile("([\\s]?\\d{1,2}[:\\?!,'-\\.\\s])+");
+                Matcher matcher = pattern.matcher(msg);
+                if(matcher.matches()) {
                     txtFld.setText(fromAIZ26(msg));
-                    isEncoded = false;
                 } 
                 else {
                     txtFld.setText(toAIZ26(msg));
-                    isEncoded = true;
                 }
                 
             } 
@@ -462,7 +465,6 @@ public class TheCipherGame extends JFrame  implements ActionListener {
         txtFld.setSize(WIDTH, HEIGHT);
     }
      
-    
     public static void main(String[] args) {
         TheCipherGame app = new TheCipherGame();
     } 
