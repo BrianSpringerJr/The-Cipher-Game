@@ -2,7 +2,6 @@
  *
  *  This file is part of TheCipherGame.
  * 
- *
  *  TheCipherGame was developed by Brian Springer
  *
  *  The CipherGame was made simply for fun. So give it a try. 
@@ -26,8 +25,10 @@ import javax.swing.JTextField;
 
 public class TheCipherGame extends JFrame  implements ActionListener {
     
-    // GUI Fields
+    // General Fields
+    private static final String REGEX = "([\\s]?\\d{1,2}[:\\?!,'-\\.\\s]?)+";
     
+    // GUI Fields  
     Container content = this.getContentPane();
     
     JPanel pnl = new JPanel();
@@ -48,38 +49,27 @@ public class TheCipherGame extends JFrame  implements ActionListener {
     * THECIPHERGAME TOCAESAR FUNCTION
     * DESCRIPTION: Converts message using the Caesar Cipher.
     * PASSED TO THIS FUNCTION: 
-        *    String message: The message to be encoded
-        *    int key:        The amount of times each character is to be shifted 
-        *                    to the right.     
+        *    @param msg: The message to be encoded
+        *    @param key: Shifts character n letters right.     
     */
-    String toCaesar(String message, int key) {
+    String toCaesar(String msg, int key) {
         String str = "";
-        for(int i = 0; i < message.length(); i++) {
-            char ch = message.charAt(i);
-            if(Character.isLetter(ch)) {
-                if(Character.isUpperCase(ch)) {
-                    
-                    int tmp = (int)ch + key;
-                    while(tmp > (int)'Z') { 
-                        int remainder = tmp - (int)'Z' - 1;
-                        tmp = (int)'A' + remainder;
-                    }
-                    ch = (char)tmp;
-                    
-                } else {
-                    int tmp = (int)ch + key;
-                    while(tmp > (int)'z') { 
-                        int remainder = tmp - (int)'z' - 1;
-                        tmp = (int)'a' + remainder;
-                    }
-                    ch = (char)tmp;
+        msg = msg.toUpperCase();
+        
+        for(int i = 0; i < msg.length(); i++) {
+            char ch = msg.charAt(i);
+            if(Character.isLetter(ch)) {  
+                int tmp = (int)ch + key;
+                while(tmp > (int)'Z') { 
+                    int remainder = tmp - (int)'Z' - 1;
+                    tmp = (int)'A' + remainder;
                 }
+                ch = (char)tmp;                           
                 str += ch;
             }
             else {
                 str += ch;
-            }
-            
+            } 
         }
         return str;
     }
@@ -88,33 +78,25 @@ public class TheCipherGame extends JFrame  implements ActionListener {
     * THECIPHERGAME FROMCAESAR FUNCTION
     * DESCRIPTION: Decrypts an encoded message using the Caesarean cipher.
     * PASSED TO THIS FUNCTION: 
-        *    String message: The message to be decoded
-        *    int key:        The amount of times each character is to be shifted
-        *                    to the left.     
+        *    @param msg: The message to be decoded
+        *    @param key: Shifts character n letters left.     
     */
     String fromCaesar(String msg, int key) {
         String str = "";
+        msg = msg.toUpperCase();
+        
         for(int i = 0; i < msg.length(); i++) {
             char ch = msg.charAt(i);
-            if(Character.isLetter(ch)) {
-                if(Character.isUpperCase(ch)) {
-                    int tmp = (int)ch - key;
-                    while(tmp < (int) 'A') {
-                        int remainder = (int)'A' - tmp;
-                        tmp = (int) 'Z' - remainder + 1;
-                    }
-                    ch = (char)tmp;
-                } else {
-                   int tmp = (int)ch - key;
-                    while(tmp < (int) 'a') {
-                        int remainder = (int)'a' - tmp;
-                        tmp = (int) 'z' - remainder + 1;
-                    }   
-                    ch = (char)tmp; 
+            if(Character.isLetter(ch)) { 
+                int tmp = (int)ch - key;
+                while(tmp < (int) 'A') {
+                    int remainder = (int)'A' - tmp;
+                    tmp = (int) 'Z' - remainder + 1;
                 }
-                str += ch;
-                
-            } else {
+                ch = (char)tmp;
+                str += ch;  
+            } 
+            else {
                 str += ch;
             }
         }
@@ -126,36 +108,26 @@ public class TheCipherGame extends JFrame  implements ActionListener {
     * DESCRIPTION: Encodes a message using the Abtash cipher by flipping the 
     *              letters in the alphabet.
     * PASSED TO THIS FUNCTION: 
-        *    String message: The message to be encoded.      
+        *    @param msg: The message to be encoded.      
     */
     String toAbtash(String msg) {
         String str = "";
+        msg = msg.toUpperCase();
+        
         for(int i = 0; i < msg.length(); i++) {
             char ch = msg.charAt(i);
             if(Character.isLetter(ch)) {
-                if(Character.isUpperCase(ch)) {
-                    
-                    int tmp = (int)ch + 25;
-                    while(tmp > 90) { 
-                        int remainder = tmp - 90;
-                        tmp = 90 - remainder;
-                    }
-                    ch = (char)tmp;
-                    
-                } else {
-                    int tmp = (int)ch + 25;
-                    while(tmp > 122) { 
-                        int remainder = tmp - 122;
-                        tmp = 122 - remainder;
-                    }
-                    ch = (char)tmp;
+                int tmp = (int)ch + 25;
+                while(tmp > 90) { 
+                    int remainder = tmp - 90;
+                    tmp = 90 - remainder;
                 }
+                ch = (char)tmp;
                 str += ch;
             }
             else {
                 str += ch;
-            }
-            
+            }         
         }
         return str;
     }
@@ -165,7 +137,7 @@ public class TheCipherGame extends JFrame  implements ActionListener {
     * DESCRIPTION: Encodes message by substituting letters with numbers (where
     *              they appear in the alphabet).
     * PASSED TO THIS FUNCTION: 
-        *    String message: The message to be encoded     
+        *    @param msg: The message to be encoded     
     */
     String toAIZ26(String msg) {
         String str = "";
@@ -199,47 +171,49 @@ public class TheCipherGame extends JFrame  implements ActionListener {
     }
     
     /***************************************************************************
+    * THECIPHERGAME NUMTOLETTER FUNCTION
+    * DESCRIPTION: Returns the nth letter of the alphabet
+    * PASSED TO THIS FUNCTION: 
+        *    @param str: A string containing the nth letter of the alphabet.     
+    */
+    private char numToLetter(String str) {
+        int num = Integer.parseInt(str);
+        num += 64;
+        char ch = (char) num;
+        return ch;
+    }
+    
+    /***************************************************************************
     * THECIPHERGAME FROMAIZ26 FUNCTION
     * DESCRIPTION: Decrypts an encoded message using the AIZ26 cipher.
     * PASSED TO THIS FUNCTION: 
-        *    String message: The message to be decoded      
+        *    @param msg: The message to be decoded      
     */
     String fromAIZ26(String msg) {
         String str = "";
-        for(int i = 0; i < msg.length(); i++) {
-            String tmp  = "";
-            char ch = msg.charAt(i);
-            if(Character.isDigit(ch)) {
-                while(Character.isDigit(ch)) {
-                    tmp += ch;
-                    i++;
-                    ch = msg.charAt(i);
-                }
-                int num = Integer.parseInt(tmp);
-                num += 64;
-                char c = (char) num;
-                str += c;
-                
-                if(ch == '-') {
-                    
-                } 
-                
-                else {
-                    str += ch;
-                    
-                }
+        String tmp  = "";
+        char ch;
+        for(int i = 0; i < msg.length(); i++) {         
+            ch = msg.charAt(i);
+            if(Character.isDigit(ch)) {   
+                tmp += ch;                                                                      
             }
             else {
                 if(ch == '-') {
-                    
+                    str += numToLetter(tmp);
                 } 
-                
                 else {
+                    if(!tmp.isEmpty()) {
+                        str += numToLetter(tmp);
+                    }
                     str += ch;
-                    
                 }
+                tmp = "";
             }
         }
+        if(!tmp.isEmpty()) {
+                        str += numToLetter(tmp);
+                    }
         str = str.trim();
         return str;
     }
@@ -255,6 +229,7 @@ public class TheCipherGame extends JFrame  implements ActionListener {
         
     */
     private String formatKey(String msg, String key) {
+        key = key.toUpperCase();       
         String tmp = "";
         int count = 0;
         key = key.replaceAll("\\s+","");
@@ -325,11 +300,14 @@ public class TheCipherGame extends JFrame  implements ActionListener {
      * @return: The encoded vigenere method.
     */
     public String toVigenere(String msg, String key) {
+        
         String formattedKey = formatKey(msg, key);
+        msg = msg.toUpperCase();
         char[][] vigenereSquare = createVigenereSquare();
         String tmp = "";
         int i = 0;
         int count = 0;
+        
         while(count < formattedKey.length()) {
             int row  = getAlphabetIndex(msg.charAt(i));
             int col = getAlphabetIndex(formattedKey.charAt(count));
@@ -356,7 +334,9 @@ public class TheCipherGame extends JFrame  implements ActionListener {
      * @return: The decoded vigenere message.
     */
     public String fromVigenere(String msg, String key) {
+        
         String formattedKey = formatKey(msg, key);
+        msg = msg.toUpperCase();
         char[][] vigenereSquare = createVigenereSquare();
         String tmp = "";
         int i = 0;
@@ -405,7 +385,7 @@ public class TheCipherGame extends JFrame  implements ActionListener {
             }
             else if (btn == SUB) {
                 Pattern pattern;
-                pattern = Pattern.compile("([\\s]?\\d{1,2}[:\\?!,'-\\.\\s])+");
+                pattern = Pattern.compile(REGEX);
                 Matcher matcher = pattern.matcher(msg);
                 
                 if(matcher.matches()) {
@@ -436,7 +416,7 @@ public class TheCipherGame extends JFrame  implements ActionListener {
     
     public final void createWindow() {
         setTitle("The Cipher Game");
-        setSize(650,240);
+        setSize(750,340);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
         setVisible(true);
@@ -450,6 +430,7 @@ public class TheCipherGame extends JFrame  implements ActionListener {
         ENCODEVIGENERE.addActionListener(this);
         DECODEVIGENERE.addActionListener(this);
     }
+    
     public TheCipherGame() {
         
         createWindow();
